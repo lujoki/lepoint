@@ -13,7 +13,7 @@ import shutil
 
 # Print help message
 def usage():
-    print 'Usage: python deployer.py [options]'
+    print 'Usage: python deploy.py [options]'
     print 'Options:'
     print '\t-d, --directory Path to dot files directory if not current directory'
     print '\t-h, --help Print this message and exit'
