@@ -88,7 +88,7 @@ urxvt*scrollColor:        #777777
 urxvt*cursorColor:        #ffcc00
 urxvt*loginShell:         true
 urxvt*termName:           rxvt
-urxvt*cutchars:           "()*,<>[]{}|'
+urxvt*cutchars:           "()*,<>[]{}|'"
 urxvt*print-pipe:         cat > $(echo urxvt.dump.`date +'%Y%M%d%H%m%S'`)
 urxvt*secondaryScroll:    true
 urxvt*mapAlert:           true
@@ -191,7 +191,7 @@ xscreensaver.passwd.thermometer.width:       8
 xscreensaver.dateFormat:    %I:%M%P %a %b %d, %Y
 
 ! Emacs -------------------------------------------------------------------------
-
+emacs.geometry: 80x50
 emacs*font: 			xft:Terminus:pixelsize=11:antialias=true:hinting=true
 emacs*boldFont: 		xft:Terminus:pixelsize=11:antialias=true:bold:hinting=true
 emacs*italicFont: 		xft:Terminus:pixelsize=11:antialias=true:italic:autohint=true:hinting=true

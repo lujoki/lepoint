@@ -7,17 +7,24 @@
 ;;	Addons: color-theme
 
 
-;; ========= Set Colour Scheme ==========
+;; ========= Emacs Look & Feel ==========
 
 (require 'color-theme)
 (setq color-theme-is-global t)
 (color-theme-calm-forest)
 (set-default-font "-*-terminus-medium-r-*-*-16-*-*-*-*-*-*-*")
 
+;; Hide menubar
+;;(menu-bar-mode 0)
+;; Hide toolbar
+(tool-bar-mode 0)
+
 ;; ========== Buffer Settings ==========
 
 ;; Open file on load
 (find-file "~/Dropbox/org/life.org")
+
+(setq default-directory "~/")
 
 ;; Turn off welcome help message
 (setq inhibit-startup-message t)
@@ -126,3 +133,24 @@
   (switch-to-buffer "life.org"))
 
 (global-set-key (kbd "C-c l") 'life-buffer)
+
+;; ======= Set Window Size Acording to Monitor Res =======
+
+(defun set-frame-size-according-to-resolution ()
+  (interactive)
+  (if window-system
+  (progn
+    ;; use 120 char wide window for largeish displays
+    ;; and smaller 80 column windows for smaller displays
+    ;; pick whatever numbers make sense for you
+    (if (> (x-display-pixel-width) 1440)
+        (add-to-list 'default-frame-alist (cons 'width 120))
+      (add-to-list 'default-frame-alist (cons 'width 100)))
+    ;; for the height, subtract a couple hundred pixels
+    ;; from the screen height (for panels, menubars and
+    ;; whatnot), then divide by the height of a char to
+    ;; get the height we want
+    (add-to-list 'default-frame-alist 
+     (cons 'height (/ (- (x-display-pixel-height) 100) (frame-char-height)))))))
+
+(set-frame-size-according-to-resolution)

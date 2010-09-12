@@ -1,0 +1,80 @@
+Power management
+
+Now the real deal: how to maximize battery operation and lifetime with the Lenovo Thinkpad X300?
+
+The average base power consumption is 14 W, WiFi on, 75% backlight, some terminals and Firefox.
+
+First, disable everything you will never use in the BIOS. Currently, I disabled Bluetooth, WiMAX, Wireless WAN (3G),"USB Wifi" (wtf?) and touchpad. Saving: 2 W
+
+Then disable Wake On Lan, unless you need it. It keeps the Gigabit Ethernet Controller to remain in an active state that actually use energy. Saving: 1W
+
+Moreover, I blacklisted the e1000e module, since I mainly use WiFi. When I need wired connection, I simply modprobe it.
+
+Then concerning the wlan0 WiFi interface, just run:
+
+iwconfig wlan0 power on
+in order to active Power Management. Saving: 0.5W
+
+Some sysctl tweaking in /etc/sysctl.conf:
+
+vm.laptop_mode = 5  # Activating laptop mode, power friendly I/Os
+vm.dirty_writeback_centisecs = 2000
+kernel.nmi_watchdog = 0
+vm.swappiness = 5
+And in /etc/rc.local:
+
+echo 10 > /sys/module/snd_hda_intel/parameters/power_save
+echo min_power > /sys/class/scsi_host/host0/link_power_management_policy
+echo min_power > /sys/class/scsi_host/host1/link_power_management_policy
+Saving: 2W
+
+Quite simple, heh? :) Now, my average consumption is 8.8W, allowing a real use of the X300 for more than 6 hours, instead of 4h30.
+
+Last thoughts
+
+The internal fan management is kinda broken in Linux. The workaround is to append thinkpad_acpi to /etc/modules and options thinkpad_acpi fan_control=1 to /etc/modprobe.d/fan for instance.
+
+Then you could use thinkfan and this sample thinkfan.conf:
+
+--------------------------------------------------------------------------------
+# thinkfan example config file
+# ============================
+#
+# Syntax:
+# (LEVEL, LOW, HIGH)
+#
+# LEVEL is the fan level that's written to /proc/acpi/ibm/fan
+# LOW is the temperature at which to step down to the previous level
+# HIGH is the temperature at which to step up to the next level
+# All numbers are integers.
+#
+# You can put spaces anywhere you want. Anything that doesn't match this
+# syntax is ignored.
+#
+# The number of tuples is limited by the size of your system memory.
+#
+# WARNING: Sanity checks are only made for correct ordering of the fan levels
+# and for (LOW < HIGH) within one tuple. You can still use any kind of insane
+# temperature limits.
+
+(0,     0,      50)
+(1,     48,     58)
+(2,     54,     61)
+(3,     56,     63)
+(4,     58,     65)
+(5,     60,     66)
+(7,     63,     128)
+
+
+
+--------------------------------------------------------------------------------
+
+
+Concerning lithium batteries, you should keep them charged between 40% and 80%. It is quite easy to do with Thinkpads: just append tp_smapi to /etc/modules, and the upper charge limit will be set to 86%, which is a good compromise. Moreover, instead of completely drain the Ultrabay battery before switching to the main battery, you can manually force discharge; as root type:
+
+echo 1 > /sys/devices/platform/smapi/BAT0/force_discharge
+But do not forget that even if you replug your laptop, discharge will resume anyway! 
+Thus, you have to bypass forced discharge; as root type:
+
+echo 0 > /sys/devices/platform/smapi/BAT0/force_discharge
+Annoying workaround, but I will try to find or code a proper solution.
